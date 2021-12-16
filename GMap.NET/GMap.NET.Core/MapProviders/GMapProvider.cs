@@ -210,6 +210,9 @@ namespace GMap.NET.MapProviders
         public static readonly SwedenMapProvider SwedenMap = SwedenMapProvider.Instance;
         public static readonly SwedenMapProviderAlt SwedenMapAlternative = SwedenMapProviderAlt.Instance;
 
+        public static readonly SwisstopoSatelliteProvider SwisstopoSatellite = SwisstopoSatelliteProvider.Instance;
+        public static readonly SwisstopoMapProvider SwisstopoMap = SwisstopoMapProvider.Instance;
+
         public static readonly UMPMapProvider UMPMap = UMPMapProvider.Instance;
 
         public static readonly CustomMapProvider CustomMap = CustomMapProvider.Instance;
