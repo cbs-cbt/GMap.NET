@@ -1122,7 +1122,7 @@ namespace GMap.NET.Avalonia
 
                             if (tilePoint.PosXY == _core.CenterTileXYLocation)
                             {
-                                var tileText = GetFormattedText("CENTER:" + tilePoint.ToString(), 16);
+                                var tileText = GetFormattedText($"CENTER: " + tilePoint.ToString(), 16);
                                 //tileText.MaxTextWidth = _core.TileRect.Width;
                                 g.DrawText(
                                     Brushes.Black,
