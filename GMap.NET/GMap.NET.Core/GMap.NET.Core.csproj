@@ -50,12 +50,6 @@ https://github.com/judero01col/GMap.NET/blob/master/README.md#release-notes
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="swisstopo.reframelib">
-      <HintPath>..\..\..\..\Polux\PicomInternal\PicomInternal\Libraries\swisstopo.reframelib.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

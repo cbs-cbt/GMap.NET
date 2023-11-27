@@ -130,6 +130,21 @@ namespace GMap.NET.MapProviders
         public override string Name { get; } = "SwisstopoDroneFlightRestrictions";
         public GMapProvider BackgroundProvider { get; set; } = SwisstopoSatelliteProvider.Instance;
         public float Opacity { get; set; } = 0.5F;
+        /*
+        To implement : ability to set opacity of layers
+        public override GMapProvider[] Overlays
+        {
+            get
+            {
+                if (overlays == null)
+                {
+                    overlays = new GMapProvider[] { SwisstopoSatelliteProvider.Instance, this };
+                }
+                
+                return overlays;
+            }
+        }
+        */
         #endregion
 
         #region Constructor
@@ -176,7 +191,7 @@ namespace GMap.NET.MapProviders
         #region Private functions
         protected override string MakeTileImageUrl(GPoint pos, int zoom, string language)
         {
-            return string.Format("https://wmts.geo.admin.ch/1.0.0/ch.bazl.einschraenkungen-drohnen/default/current/21781/{0}/{2}/{1}.png", zoom + ZOOM_OFFSET, pos.X, pos.Y);
+            return string.Format("https://wmts.geo.admin.ch/1.0.0/ch.bazl.einschraenkungen-drohnen/default/current/3857/{0}/{1}/{2}.png", zoom, pos.X, pos.Y);
         }
         #endregion
     }
