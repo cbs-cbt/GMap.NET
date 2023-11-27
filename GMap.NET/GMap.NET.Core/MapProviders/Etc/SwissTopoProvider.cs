@@ -55,7 +55,7 @@ namespace GMap.NET.MapProviders
 
             //--------------------------------------------------------------------------------¦
             // Creates the cache instance                                                     ¦
-            GMap.NET.Internals.Cache.Instance.CacheLocation.Clone();
+            Internals.Cache.Instance.CacheLocation.Clone();
         }
         #endregion
 
@@ -93,10 +93,10 @@ namespace GMap.NET.MapProviders
         #endregion
     }
 
-    public class SwisstopoProvider : SwisstopoProviderBase
+    public class SwisstopoMapProvider : SwisstopoProviderBase
     {
         #region Members
-        public static readonly SwisstopoProvider Instance;
+        public static readonly SwisstopoMapProvider Instance;
         #endregion
 
         #region Properties
@@ -105,53 +105,24 @@ namespace GMap.NET.MapProviders
         #endregion
 
         #region Constructor
-        static SwisstopoProvider()
+        static SwisstopoMapProvider()
         {
-            Instance = new SwisstopoProvider();
+            Instance = new SwisstopoMapProvider();
         }
         #endregion
 
         #region Private functions
         protected override string MakeTileImageUrl(GPoint pos, int zoom, string language)
         {
-            return string.Format("https://wmts20.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{0}/{1}/{2}.jpeg", zoom, pos.X, pos.Y);
+            return string.Format("https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{0}/{1}/{2}.jpeg", zoom, pos.X, pos.Y);
         }
         #endregion
     }
 
-    public class SwisstopoDroneFlightRestrictionsProvider : SwisstopoProviderBase
+    public abstract class SwisstopoDroneFlightRestrictionsProviderBase : SwisstopoProviderBase
     {
-        #region Members
-        public static readonly SwisstopoDroneFlightRestrictionsProvider Instance;
-        #endregion
-
         #region Properties
-        public override Guid Id { get; } = new Guid("A16B7FA5-DDBF-453E-A9F8-0438C6CCACEF");
-        public override string Name { get; } = "SwisstopoDroneFlightRestrictions";
-        public GMapProvider BackgroundProvider { get; set; } = SwisstopoSatelliteProvider.Instance;
         public float Opacity { get; set; } = 0.5F;
-        /*
-        To implement : ability to set opacity of layers
-        public override GMapProvider[] Overlays
-        {
-            get
-            {
-                if (overlays == null)
-                {
-                    overlays = new GMapProvider[] { SwisstopoSatelliteProvider.Instance, this };
-                }
-                
-                return overlays;
-            }
-        }
-        */
-        #endregion
-
-        #region Constructor
-        static SwisstopoDroneFlightRestrictionsProvider()
-        {
-            Instance = new SwisstopoDroneFlightRestrictionsProvider();
-        }
         #endregion
 
         #region Public functions
@@ -159,26 +130,22 @@ namespace GMap.NET.MapProviders
         {
             PureImage l_piResult = null;
 
-            using (var l_piOverlay = base.GetTileImage(pos, zoom))
-            using (var l_bmpOverlay = System.Drawing.Bitmap.FromStream(l_piOverlay.Data))
-            using (var l_piBackground = BackgroundProvider.GetTileImage(pos, zoom))
-            using (var l_bmpBackground = System.Drawing.Bitmap.FromStream(l_piBackground.Data))
-            using (var l_bmpResult = new System.Drawing.Bitmap(l_bmpBackground.Width, l_bmpBackground.Height))
-            using (var l_gResult = System.Drawing.Graphics.FromImage(l_bmpResult))
+            using (var l_piThis = base.GetTileImage(pos, zoom))
+            using (var l_bmpThis = Image.FromStream(l_piThis.Data))
+            using (var l_bmpResult = new Bitmap(l_bmpThis.Width, l_bmpThis.Height))
+            using (var l_gResult = Graphics.FromImage(l_bmpResult))
             {
-                l_gResult.DrawImage(l_bmpBackground, 0, 0);
-
                 var l_iaAttributes = new System.Drawing.Imaging.ImageAttributes();
                 l_iaAttributes.SetColorMatrix(new System.Drawing.Imaging.ColorMatrix() { Matrix33 = Opacity });
 
-                var l_rectDest = new System.Drawing.Rectangle(0, 0, l_bmpBackground.Width, l_bmpBackground.Height);
+                var l_rectDest = new Rectangle(0, 0, l_bmpThis.Width, l_bmpThis.Height);
 
-                l_gResult.DrawImage(l_bmpOverlay, l_rectDest, 0, 0,
-                    l_bmpBackground.Width, l_bmpBackground.Height, System.Drawing.GraphicsUnit.Pixel, l_iaAttributes);
+                l_gResult.DrawImage(l_bmpThis, l_rectDest, 0, 0,
+                    l_bmpThis.Width, l_bmpThis.Height, GraphicsUnit.Pixel, l_iaAttributes);
 
                 using (var l_msResult = new MemoryStream())
                 {
-                    l_bmpResult.Save(l_msResult, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    l_bmpResult.Save(l_msResult, System.Drawing.Imaging.ImageFormat.Png);
 
                     l_piResult = TileImageProxy.FromArray(l_msResult.ToArray());                
                 }
@@ -192,6 +159,66 @@ namespace GMap.NET.MapProviders
         protected override string MakeTileImageUrl(GPoint pos, int zoom, string language)
         {
             return string.Format("https://wmts.geo.admin.ch/1.0.0/ch.bazl.einschraenkungen-drohnen/default/current/3857/{0}/{1}/{2}.png", zoom, pos.X, pos.Y);
+        }
+        #endregion
+    }
+    public class SwisstopoDroneFlightRestrictionsSatelliteProvider : SwisstopoDroneFlightRestrictionsProviderBase
+    {
+        #region Members
+        public static readonly SwisstopoDroneFlightRestrictionsSatelliteProvider Instance;
+        #endregion
+
+        #region Properties
+        public override Guid Id { get; } = new Guid("A16B7FA5-DDBF-453E-A9F8-0438C6CCACEF");
+        public override string Name { get; } = "SwisstopoDroneFlightRestrictionsSatellite";
+        public override GMapProvider[] Overlays
+        {
+            get
+            {
+                if (overlays == null)
+                {
+                    overlays = new GMapProvider[] { SwisstopoSatelliteProvider.Instance, this };
+                }
+                
+                return overlays;
+            }
+        }
+        #endregion
+
+        #region Constructor
+        static SwisstopoDroneFlightRestrictionsSatelliteProvider()
+        {
+            Instance = new SwisstopoDroneFlightRestrictionsSatelliteProvider();
+        }
+        #endregion
+    }
+    public class SwisstopoDroneFlightRestrictionsMapProvider : SwisstopoDroneFlightRestrictionsProviderBase
+    {
+        #region Members
+        public static readonly SwisstopoDroneFlightRestrictionsMapProvider Instance;
+        #endregion
+
+        #region Properties
+        public override Guid Id { get; } = new Guid("791EEA9D-412B-4B62-9A9F-C6246F9AB250");
+        public override string Name { get; } = "SwisstopoDroneFlightRestrictionsMap";
+        public override GMapProvider[] Overlays
+        {
+            get
+            {
+                if (overlays == null)
+                {
+                    overlays = new GMapProvider[] { SwisstopoMapProvider.Instance, this };
+                }
+                
+                return overlays;
+            }
+        }
+        #endregion
+
+        #region Constructor
+        static SwisstopoDroneFlightRestrictionsMapProvider()
+        {
+            Instance = new SwisstopoDroneFlightRestrictionsMapProvider();
         }
         #endregion
     }
