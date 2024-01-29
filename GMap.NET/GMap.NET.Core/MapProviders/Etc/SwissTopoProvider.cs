@@ -36,8 +36,8 @@ namespace GMap.NET.MapProviders
         {
             RefererUrl = "https://api3.geo.admin.ch/services/sdiservices.html#wmts";
             Copyright = "© Données:CNES, Spot Image, swisstopo, NPOC";
-            Area = new RectLatLng(45.398181, 5.140242, 2.83247, 6.337328);
-            MinZoom = 2;
+            Area = new RectLatLng(45.398181, 5.140242, 6.337328, -2.83247);
+            MinZoom = 5;
             MaxZoom = 19;
         }
         #endregion
