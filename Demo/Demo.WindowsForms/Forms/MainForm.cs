@@ -96,7 +96,7 @@ namespace Demo.WindowsForms
                 textBoxGeo.Text = "Lithuania, Vilnius";
               
 
-                MainMap.ScaleMode = ScaleModes.Fractional;
+                MainMap.ScaleMode = ScaleModes.Integer;
 
                 //----------------------------------------
                 // Map Events

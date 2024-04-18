@@ -38,7 +38,7 @@ namespace GMap.NET.MapProviders
             Copyright = "© Données:CNES, Spot Image, swisstopo, NPOC";
             Area = new RectLatLng(45.398181, 5.140242, 6.337328, -2.83247);
             MinZoom = 5;
-            MaxZoom = 19;
+            MaxZoom = 20;
         }
         #endregion
 

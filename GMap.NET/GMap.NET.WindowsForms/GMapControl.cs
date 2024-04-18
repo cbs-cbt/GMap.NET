@@ -159,6 +159,13 @@ namespace GMap.NET.WindowsForms
         }
 
         /// <summary>
+        /// Interpolation mode used to resize tile when zoom is bigger than privider's best zoom
+        /// </summary>
+        [Category("GMap.NET")]
+        [Description("Interpolation mode used to resize tile when zoom is bigger than privider's best zoom")]
+        public InterpolationMode ZoomInterpolationMode { get; set; } = InterpolationMode.Default;
+
+        /// <summary>
         ///     Import From Kmz
         /// </summary>
         /// <param name="file"></param>
@@ -1360,7 +1367,7 @@ namespace GMap.NET.WindowsForms
             //g.TextRenderingHint = TextRenderingHint.AntiAlias;
             //g.SmoothingMode = SmoothingMode.AntiAlias;
             //g.CompositingQuality = CompositingQuality.HighQuality;
-            //g.InterpolationMode = InterpolationMode.HighQualityBicubic;  
+            g.InterpolationMode = ZoomInterpolationMode;
 
             try
             {
